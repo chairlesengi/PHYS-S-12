@@ -3,12 +3,13 @@ var config = {
   student_year_sem: "2026, Summer", // ie. Fall 2025
   student_email: "cwjaffe@gmail.com", // ie. jdoe@college.harvard.edu
 
-  background_color: "#181818",
-  text_color: "#dedede",
+  background_color: "#dedede",
+  text_color: "#181818",
   accent_color: "#FFFFFF",
 
   // Make sure to add the @import from Google Fonts to style.css, ask if you need help!
-  font_family: "Lato",
+  para_font_family: "Space Grotesk",
+  heading_font_family: "Audiowide",
   code_font_family: "Roboto Mono"
 };
 
@@ -28,7 +29,11 @@ document.documentElement.style.setProperty(
 );
 document.documentElement.style.setProperty(
   "--font-family",
-  config.font_family
+  config.para_font_family
+);
+document.documentElement.style.setProperty(
+  "--heading-font-family",
+  config.heading_font_family
 );
 document.documentElement.style.setProperty(
   "--mono-font-family",

@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
-
+@import url('https://fonts.googleapis.com/css?family=Audiowide');
+@import url('https://fonts.googleapis.com/css2?family=Bitcount+Single:wght@100..900&family=Space+Grotesk:wght@300..700&display=swap');
 :root {
   --secondary-background-color: color-mix(in srgb, var(--text-color) 8%, var(--background-color) 92%);
   --accent-color: #FFFFFF;
@@ -25,6 +26,10 @@ html {
 
 h1, h2, h3, p, b, ul, ol, pre, table {
   margin-bottom: 3rem;
+}
+
+h1, h2, h3 {
+  font-family: var(--heading-font-family);
 }
 
 h1 {
