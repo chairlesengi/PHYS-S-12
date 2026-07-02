@@ -18,11 +18,32 @@
     <section class="blog">
       <h1>Week 3: Fabrication</h1>
 
-      <p>Create a kinetic sculpture that contains circuitry. Make sure to include at least one video/gif in your documentation.</p>
+      <p>For this assignment, I created a kinetic sculpture of the inside of a cycloidal drive reducer. I plan on using it as part of my smart actuator project, and I used this kinetic sculpture assignment to better understand how they work on the inside. I generated the disc and the surrounding geometry critical to the motion of the disc using <a href="https://cad.onshape.com/documents/347e6a9ae9d0992f4b101a70/w/d85d62ab1c292cc0d3314104/e/55e02e8273c0be0982e759b2">this</a> Onshape featurescript, and then incorporated that geometry into a housing with a custom motor mount for a 300rpm 12v motor. I run the motor at 5v, both for convenience and because it spins slower and therefore demonstrates the mechanism better. There are some issues with some of the laser cut parts, especially the backplate, but they aren't consequential since it still bolts together. Everything except the outer pin ring is lasercut 3mm acrylic, with the outer ring being laser cut 6mm plywood. I originally used plywood for everything, but the friction was much too high even with grease. The cycloidal drive profile is created by rolling a circle around the edge of a larger circle, and drawing the path a point on that smaller circle takes. If the point is on the edge of the circle, it is a cycloid, and inside the circle(more commonly used) is a diminished cycloid pattern, which is useful because it has less sharp corners that can't be manufactured easily. The discs have 12 lobes and the housing 13 pins, so the reduction ratio is 12/(13-12) = 12:1. Every rotation of the offset cams on the motor 'step' the discs around their rotation by one lobe.</p>
       
+      <p>Here's a video of the drive in action:</p>
+
       <video controls>
-        <source src="./Assets/example_video.mp4" type="video/mp4">
+        <source src="./Assets/CycloidVideo.mp4" type="video/mp4">
       </video>
+
+      <p>And here's some images from the development process:</p>
+
+      <div id="slideshow1" class="slideshow-container">
+				<div class="slides">
+					<img src="./Assets/CWJ_1590.jpg" alt="Final Image">
+				</div>
+				<div class="slides">
+					<img src="./Assets/IMG_2913.png" alt="Old Parts 1">
+				</div>
+        <div class="slides">
+					<img src="./Assets/IMG_2914.png" alt="Old Parts 2">
+				</div>
+
+				<a class="prev" onclick="plusSlides(-1, 'slideshow1')">&#10094;</a>
+				<a class="next" onclick="plusSlides(1, 'slideshow1')">&#10095;</a>
+			</div>
+
+      <p>Finally, download the source CAD and DXF files <a href="./Assets/CycloidTestUpdate.zip" download>here</a>.</p>
       
     </section>
   </body>
