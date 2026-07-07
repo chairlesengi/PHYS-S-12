@@ -1,5 +1,91 @@
 <link rel="stylesheet" href="../style.css">
 
-<pre><code>// Put your code here
-Serial.print("Hello World!");
+<pre><code>
+#include &ltCPID.h&gt
+
+#define SLIDERREAD A0
+#define SLIDEA D7
+#define SLIDEB D8
+#define BUTTON D6
+#define NUMSLIDES 2
+#define UPDATE_INTERVAL 10 //10ms
+#define HOME_WAIT 100 //10ms
+#define FEED_FORWARD 145
+
+bool isHomed = false;
+bool prevButton = false;
+bool isWaitingtoHome = false;
+int slideNum = 0;
+int slideVals[NUMSLIDES] = {120}; //init as 120 array
+int prevPos = 0;
+unsigned long lastUpdate = 0;
+unsigned long targetWaitTimer = 0;
+
+PID pid(4,0,0,-110,110);
+
+void setup() {
+  pinMode(BUTTON, INPUT_PULLUP);
+  pinMode(SLIDEA, OUTPUT);
+  pinMode(SLIDEB, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+
+  //filtered input from Claude Sonnet 5
+  static float filtered = analogRead(A0);
+  filtered = 0.8f * filtered + 0.2f * analogRead(A0);
+  int curr = map((int)filtered, 0, 2050, 0, 255);
+
+  unsigned long now = millis();
+  if(now-lastUpdate < UPDATE_INTERVAL){
+    return; //update throttling
+  }
+  lastUpdate = now;
+
+  Serial.println(String("Slider ") + slideNum + String(" :") + slideVals[slideNum]);
+
+  //other code
+  if(digitalRead(BUTTON) != prevButton){
+    prevButton = !prevButton;
+    if(!prevButton){
+      //increment and reset the slider number
+      slideNum++;
+      pid.reset();
+      isHomed = false;
+      if(slideNum >= NUMSLIDES){
+        slideNum = 0;
+      }
+    }
+  }
+  float output = pid.update(curr, slideVals[slideNum]);
+  if(output<0){output-=FEED_FORWARD;}
+  else if(output>0){output+=FEED_FORWARD;}
+  if(!isHomed && output < 0){
+    analogWrite(SLIDEA, 255+((int)(output)));
+    digitalWrite(SLIDEB, HIGH);
+  } else if(!isHomed && output > 0){
+    analogWrite(SLIDEA, ((int)output));
+    digitalWrite(SLIDEB, LOW);
+  } else {
+    analogWrite(SLIDEA, 0);
+    digitalWrite(SLIDEB, LOW);
+  }
+  Serial.println(String("Output ")+output);
+  if(!isHomed && abs(curr-slideVals[slideNum]) < 2 && abs(curr-prevPos) <= 1){
+    if(!isWaitingtoHome){
+      targetWaitTimer = millis();
+      isWaitingtoHome = true;
+    } else{
+      if(millis()-targetWaitTimer > HOME_WAIT){
+        isWaitingtoHome = false;
+        isHomed = true;
+      }
+    }
+  }
+  prevPos = curr;
+  if(isHomed){
+    slideVals[slideNum] = curr;
+  }
+}
 </code></pre>
