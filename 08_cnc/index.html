@@ -19,8 +19,45 @@
       <h1>Week 8: CNC</h1>
       
       <p>
-        Design and fabricate something using one of the CNC machines in the lab. Make sure to include some kind of post processing in your design.
+        For this assignment, I attempted to make a stepper motor driver with the PCB cnc mill, post processing it by assembling the board. I used the A4950 h-bridge motor drivers as the core of the board, with op-amps attached to each one's outputs to measure phase current. Because of the complex nature of the board, it was double sided, so I learned how to use the copper rivets as vias in KiCAD. To properly machine the double sided board I used <a href="https://quentinbolsee.pages.cba.mit.edu/gerber2img/">gerber2img</a> and <a href="https://www.bobbymccarthy.com/flipPCB">flippcb.</a> When milling the PCB, to get into the tighter spots of my layout, I used a v-bit and the 1/64th preset but setting endmill diameter to 0.3mm in bitrunner. There are some things I would do differently if I were to do this again, I assumed for some of the footprints that I could connect traces to both the top and bottom pads while forgetting the through-holes aren't plated so I had to manually solder both sides, which was finnicky. Instead, I would use more copper rivets to create plated through holes or I would only connect footprints on one side to aid assembly. Also, I forgot to attach a ground lead so I had to do that after the fact. It worked okay, and I got signal, but there was some issues preventing it from effectively driving a motor, perhaps code configuration. Below are some images, videos, and accompanying statements about the design and fabrication process of this circuit board.
       </p>
+
+      <p class="caption">Design of PCB in KiCAD, download design and gerbers <a href="./Assets/MotorDriver.zip" download>here</a>.</p>
+      <img src="./Assets/PCBMTRDesign.png" alt="">
+
+      <p class="caption">Milling the PCB</p>
+      <iframe src="https://www.youtube.com/embed/qVmehjiYJ28"></iframe>
+
+      <p class="caption">Post-processing and testing of PCB, first I installed the copper rivets into the via holes, then I used the spring center punch to punch the other sides open, then flattened with a hammer, and that worked really well. Then I soldered the other parts to the PCB.</p>
+
+      <div id="slideshow1" class="slideshow-container">
+				<div class="slides">
+					<img src="./Assets/IMG_2970.png" alt="">
+				</div>
+				<div class="slides">
+					<img src="./Assets/IMG_2974.png" alt="">
+				</div>
+        <div class="slides">
+					<img src="./Assets/IMG_3005.png" alt="">
+				</div>
+        <div class="slides">
+					<img src="./Assets/ScopeTesting.png" alt="">
+				</div>
+
+				<a class="prev" onclick="plusSlides(-1, 'slideshow2')">&#10094;</a>
+				<a class="next" onclick="plusSlides(1, 'slideshow2')">&#10095;</a>
+			</div>
+
+      
+
+      <p>Here are the settings I used to make the vias in KiCAD:</p>
+
+      <pre><code>//PCB Mill via settings
+      Via Size: 2.54mm
+      Via Hole: 1.59mm</code></pre>
+
+
+
       
     </section>
   </body>
