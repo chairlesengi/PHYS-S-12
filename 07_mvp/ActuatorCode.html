@@ -1,0 +1,89 @@
+<pre><code>
+#include &ltActuator.h&gt
+#include &ltStepMotor.h&gt
+#include &ltAS5600Sensor.h&gt
+
+static constexpr uint8_t STEP_PIN = 17;   // A1
+static constexpr uint8_t DIR_PIN  = 18;   // A0
+
+static constexpr uint16_t STEPS_REV = 400;
+static constexpr float    RATIO     = -12.0f;
+static constexpr float    HOME      = 0.0f;
+static constexpr bool     USE_DEG   = true;
+static constexpr uint32_t PRINT_INTERVAL = 100;
+
+AS5600Sensor sens;
+StepMotor    step(STEP_PIN, DIR_PIN, STEPS_REV);
+Actuator     act(step, sens, RATIO, HOME);
+
+unsigned long lastTime = 0;
+bool     streaming = false;
+char     lineBuf[32];
+uint8_t  lineIdx = 0;
+
+void handleCommand(const char* s) {
+  switch (s[0]) {
+    case 'h': act.goHome(); Serial.println("home");   return;
+    case 'z': act.zero();   Serial.println("zeroed"); return;
+    case 'p': Serial.println(act.getPosition(), 4);   return;
+    case 'e': Serial.println(act.getError(), 4);      return;
+    case 's': streaming = !streaming;
+              Serial.println(streaming ? "stream on" : "stream off"); return;
+  }
+
+  char* end;
+  float val = strtof(s, &end);
+  if (end == s) {
+    Serial.println("? number, or h/z/p/e/s");
+    return;
+  }
+
+  act.setTarget(USE_DEG ? val * PI / 180.0f : val);
+  Serial.print("target -> ");
+  Serial.println(val, 4);
+}
+
+void pollSerial() {
+  while (Serial.available()) {
+    char c = Serial.read();
+    if (c == '\n' || c == '\r') {
+      if (lineIdx == 0) continue;
+      lineBuf[lineIdx] = '\0';
+      handleCommand(lineBuf);
+      lineIdx = 0;
+    } else if (lineIdx < sizeof(lineBuf) - 1) {
+      lineBuf[lineIdx++] = c;
+    }
+  }
+}
+
+void setup() {
+  Serial.begin(115200);
+  while (!Serial && millis() < 3000) { }
+
+  if (!sens.begin()) {
+    Serial.println("AS5600 not responding - check wiring / bus");
+    while (1) { delay(100); }
+  }
+  step.begin();
+  if (!act.begin()) {
+    Serial.println("actuator begin failed");
+    while (1) { delay(100); }
+  }
+
+  Serial.println("ready - number to move, h/z/p/e/s");
+}
+
+void loop() {
+  pollSerial();
+  act.update();
+
+  if (streaming && millis() - lastTime >= PRINT_INTERVAL) {
+    lastTime = millis();
+    Serial.print("pos: ");
+    Serial.print(act.getPosition(), 4);
+    Serial.print("  err: ");
+    Serial.println(act.getError(), 4);
+  }
+}
+</code></pre>
