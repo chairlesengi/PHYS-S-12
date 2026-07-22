@@ -19,8 +19,14 @@
       <h1>Week 7: MVP</h1>
       
       <p>
-        For my MVP, I built a closed-loop position feedback actuator using a stepper driver and a AS5600 12 bit magnetic angle sensor. It reads the sensor, determines the error between where it is and where it wants to be, and generates a proportional response signal. The actuator also has a 12:1 cycloidal drive reducer gearbox that multiplies the torque of the motor, while reducing its speed. The sensor connects over I2C, communicating the absolute angle of the stepper motor within one degree. Then, a custom AS5600Sensor class measures and keeps track of the position of the stepper over multiple rotations, up to 12000 rpm or so. A orchestrator 'Actuator' class then handles the feedback loop, commanding control into a modular motor class. The full libary can be found <a href="https://github.com/chairlesengi/PositionActuator">here</a>. Additionally, here's the driver I used for testing it: <a href="./ActuatorCode.html">Actuator Code</a>, and <a href="./Assets/CycloidDriveVerA.zip" download>here</a> is the CAD files for the gearbox.
+        For my MVP, I built a closed-loop position feedback actuator using a stepper driver and a AS5600 12 bit magnetic angle sensor. It reads the sensor, determines the error between where it is and where it wants to be, and generates a proportional response signal. The actuator also has a 12:1 cycloidal drive reducer gearbox that multiplies the torque of the motor, while reducing its speed. The sensor connects over I2C, communicating the absolute angle of the stepper motor within one degree. Then, a custom AS5600Sensor class measures and keeps track of the position of the stepper over multiple rotations, up to 12000 rpm or so. A orchestrator 'Actuator' class then handles the feedback loop, commanding control into a modular motor class. I connected the motor driver according to the default pololu driver connection and the as5600 like any other i2c device, using the Adafruit AS5600 library. The full libary can be found <a href="https://github.com/chairlesengi/PositionActuator">here</a>. Additionally, here's the driver I used for testing it: <a href="./ActuatorCode.html">Actuator Code</a>, and <a href="./Assets/CycloidDriveVerA.zip" download>here</a> is the CAD files for the gearbox, and view them on Onshape <a href="https://cad.onshape.com/documents/33648b7e54c4d4e2de7ace25/w/9aa3ebcb439778296254b397/e/e536ca6311569b61e8851e80?renderMode=0&uiState=6a5fde48c36559ecae69e112">here</a>.
       </p>
+
+      <h3>Videos and Images of Process</h3>
+
+      <iframe src="https://www.youtube.com/embed/FlTs0KBr_EY"></iframe>
+
+      <iframe src="https://www.youtube.com/embed/9cl00TK8oes"></iframe>
       
       <div id="slideshow1" class="slideshow-container">
 				<div class="slides">
@@ -36,6 +42,19 @@
 				<a class="prev" onclick="plusSlides(-1, 'slideshow2')">&#10094;</a>
 				<a class="next" onclick="plusSlides(1, 'slideshow2')">&#10095;</a>
 			</div>
+
+      <h3>Measurement and Oscilloscope</h3>
+
+      <p>
+        I also used an oscilloscope to measure the SDA signal for the I2C angle sensor which I saw was frames of binary data that operates in the 10s to 100s of kHz for data rates. I also used the oscilloscope for other debugging throughout this MVP, like when I checked all my wiring and signals after having 3 bad drivers in a row.
+      </p>
+      
+      <img src="./Assets/IMG_3017.png" alt="">
+
+      <h3>Next Steps</h3>
+      <p>
+        I would say the biggest next step is working on better packaging and efficiency of the cycloidal drive, since a lot of the torque is being lost in the drive's inefficiencies, there could be a lot done to make it better. Additionally, I plan on creating a custom driver board that uses hybrid FOC to control the motor and that should be able to make it more powerful and smoother.
+      </p>
 
     </section>
   </body>
