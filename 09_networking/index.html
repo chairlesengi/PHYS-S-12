@@ -18,8 +18,34 @@
     <section class="blog">
       <h1>Week 9: Networking</h1>
 
-      <p>Working with a partner or group of 3, program something that makes use of the radio, Wifi, or bluetooth capabilities of the ESP32. Only one person per group needs to have documentation on their website. Everyone else should provide a link to that person's documentation.</p>
-      
+      <p>For this assignment, I worked on an internet-connected magic card printer. I wanted to play a Magic format called Momir basic, where you play with random cards. However, it's really only feasible on digital because physical random cards are hard to randomly create. That is, unless you connect a thermal printer to an esp32, which allows access to the Scryfall random cards api, which I then filtered to get a random card from a desired category. For example, in Momir basic the search terms would be looking for only creature cards of a specific mana value, specifically a mana value equal to the mana a player used to cast the random card. Because Scryfall only takes HTTPS requests, I had to use both <code>WiFiClientSecure client; //and HTTPClient http; </code> to create a secure connection and send the actual GET requests for the data. Then, I used ArduinoJson to parse the recieved data for the name, type, power, toughness, oracle text (body), and mana cost, which I then printed to the printer using TTL serial (UART) interface <code>Serial1</code>.</p>
+
+      <div id="slideshow1" class="slideshow-container">
+				<div class="slides">
+					<img src="./Assets/IMG_3024.png" alt="">
+				</div>
+				<div class="slides">
+					<img src="./Assets/IMG_3025.png" alt="">
+				</div>
+        <div class="slides">
+					<img src="./Assets/IMG_3027.png" alt="">
+				</div>
+
+				<a class="prev" onclick="plusSlides(-1, 'slideshow2')">&#10094;</a>
+				<a class="next" onclick="plusSlides(1, 'slideshow2')">&#10095;</a>
+			</div>
+
+      <p class="caption">Printer with card, Serial wiring, terminal output</p>
+
+      <h3>Video Demonstration</h3>
+
+      <p>This video demonstrates the function of the printer, from inputting a mana value to printing out a result from scryfall.</p>
+
+      <iframe src="https://youtube.com/embed/8GlVrGOQ_Ew"></iframe>
+
+      <h3>Downloads and References</h3>
+
+      <p>This code was produced with the aid of AI. Find the raw code <a href="./rawcode.html">here</a>.</p>
     </section>
   </body>
 

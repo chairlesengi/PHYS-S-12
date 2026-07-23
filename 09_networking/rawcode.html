@@ -1,0 +1,179 @@
+<pre><code>
+#include &ltWiFi.h&gt
+#include &ltWiFiClientSecure.h&gt
+#include &ltHTTPClient.h&gt
+#include &ltArduinoJson.h&gt
+#include &ltHardwareSerial.h&gt
+#include &ltJPEGDEC.h&gt
+
+
+const char* ssid = "Harvard University"; //SSID (network name)
+const char* password = ""; //Password, leave empty for unsecured networks
+
+const char* UserAgent = "XIAO_ESP32MTG"; //in form &ltDeviceName&gt(&ltContact Email (optional)&gt)
+
+WiFiClientSecure client; //for HTTPS requests, required by Scryfall
+
+HTTPClient http; //actually makes the requests
+
+//struct to hold card data
+
+struct magicCard{
+  String name;
+  String manaCost;
+  String type;
+  String oracleText;
+  String power;
+  String toughness;
+  String artUrl;
+  int status = 0; //default to no status
+  bool ok = false; //status boolean
+};
+
+//urlEncoder from Claude to keep characters easy to read but also be able to generate proper https requests that don't have invalid characters
+String urlEncode(const String& s) {
+  String out;
+  out.reserve(s.length() * 3);          // worst case: every char -> %XX
+  const char* hex = "0123456789ABCDEF";
+  for (size_t i = 0; i < s.length(); i++) {
+    unsigned char c = (unsigned char)s[i];
+    if (isalnum(c) || c == '-' || c == '_' || c == '.' || c == '~') {
+      out += (char)c;                    // RFC 3986 unreserved: pass through
+    } else if (c == ' ') {
+      out += "%20";                        // space -> +
+    } else {
+      out += '%';                        // everything else -> %XX
+      out += hex[c >> 4];
+      out += hex[c & 0x0F];
+    }
+  }
+  return out;
+}
+
+magicCard fetchRandomCard(int manaValue){
+  magicCard card;
+  String q   = "t:creature mv:" + String(manaValue) + " -is:funny -is:dfc";
+  String url = "https://api.scryfall.com/cards/random?q=" + urlEncode(q);
+
+  http.begin(client, url);
+  http.setUserAgent(UserAgent);
+  http.addHeader("Accept", "application/json");
+
+  card.status = http.GET();
+  if (card.status != HTTP_CODE_OK) {
+    http.end();
+    return card;
+  }
+
+  String body = http.getString();   // getString() dechunks; getStream() does NOT
+  http.end();
+
+  JsonDocument filter;
+  filter["name"]        = true;
+  filter["mana_cost"]   = true;
+  filter["type_line"]   = true;
+  filter["oracle_text"] = true;
+  filter["power"]       = true;
+  filter["toughness"]   = true;
+  filter["image_uris"]["art_crop"] = true;
+
+  JsonDocument doc;
+  DeserializationError err =
+      deserializeJson(doc, body, DeserializationOption::Filter(filter));
+  if (err) {
+    Serial.printf("json err: %s\n", err.c_str());
+    return card;
+  }
+
+  card.name       = doc["name"]        | "";
+  card.manaCost   = doc["mana_cost"]   | "";
+  card.type       = doc["type_line"]   | "";
+  card.oracleText = doc["oracle_text"] | "";
+  card.power      = doc["power"]       | "";
+  card.toughness  = doc["toughness"]   | "";
+  card.artUrl     = doc["image_uris"]["art_crop"] | "";
+  card.ok = true;
+  return card;
+}
+
+//from claude, removes fancy type encoding to make easier to print
+String printable(String s) {
+  s.replace("\u2014", "-");   // em dash -> hyphen
+  s.replace("\u2019", "'");   // curly apostrophe -> straight (shows up in names)
+  s.replace("\u2018", "'");
+  s.replace("\u201C", "\"");  // curly quotes
+  s.replace("\u201D", "\"");
+  // strip anything still non-ASCII so no stray byte prints a random glyph
+  String out;
+  for (size_t i = 0; i < s.length(); i++) {
+    unsigned char c = s[i];
+    if (c < 0x80) out += (char)c;   // keep plain ASCII, drop UTF-8 multibyte
+  }
+  return out;
+}
+
+void printImage(){
+
+}
+
+void setup() {
+  Serial.begin(115200);
+  delay(10);
+
+  Serial.println();
+  Serial.print("Connecting to ");
+  Serial.println(ssid);
+
+  // Initialize WiFi connection
+  WiFi.begin(ssid, password);
+
+  // Wait until connected
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  Serial.println("");
+  Serial.println("WiFi connected successfully!");
+  Serial.print("IP address assigned: ");
+  Serial.println(WiFi.localIP());
+
+  client.setInsecure(); //operate without checking scryfall's certificate (too computationally taxing)
+
+  Serial1.begin(9600, SERIAL_8N1, D6, D7);
+}
+
+void loop() {
+  if (Serial.available()) { 
+    int mv = Serial.parseInt();
+    Serial.print("Mana Value: ");
+    Serial.println(mv);
+    while (Serial.available()) Serial.read();
+    magicCard card = fetchRandomCard(mv);
+    if (!card.ok) {
+     Serial.printf("fetch failed (status %d)\n", card.status);
+    return;
+    }
+    //print card, formatting for printability
+    String output =
+    "\n" + printable(card.name) + "  " + printable(card.manaCost) + "\n" +
+    printable(card.type) + "  [" + printable(card.power) + "/" +
+    printable(card.toughness) + "]\n" +
+    printable(card.oracleText) + "\n";
+    Serial1.print(output);
+    Serial1.println();
+    Serial1.println();
+    Serial1.println(); //eject paper
+
+    //print data to terminal as well
+    Serial.printf("\n%s  %s\n%s  [%s/%s]\n%s\n",
+                  card.name.c_str(),
+                  card.manaCost.c_str(),
+                  card.type.c_str(),
+                  card.power.c_str(),
+                  card.toughness.c_str(),
+                  card.oracleText.c_str());
+  }
+}
+
+</code></pre>
