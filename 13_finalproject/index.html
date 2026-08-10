@@ -21,6 +21,8 @@
       <h3>Demo:</h3>
       <iframe src="https://www.youtube.com/embed/GZM_B00HnrM"></iframe> <!-- Ideally 16 by 9 -->
 
+      <h3>Downloads Page for Design Files <a href="./downloads.html">Here</a>.</h3>
+
       <h3>Overview</h3>
 
         <p>
@@ -35,7 +37,7 @@
         </p>
 
         <p>
-          One of the biggest issues I ran into in V2 was eccentricity in the gearbox, which wasn't an issue in V1 since the input cams were mounted directly to the stepper motor's output shaft. In V2, the whole gearbox got longer to accomodate the screws that held the bearing pins in place, so the motor shaft was no longer long enough to connect all the drive cams. Instead, I bolted the cams and a 3D printed stepper motor attachment together with M2 screws to act as the main input shaft. However, this new design introduced the possibility that the input shaft was no longer perfectly aligned with the motor shaft, causing a periodic resistance in the gearbox rotation. Also, changing the discs in this version of the gearbox is much more difficult since it requires disassembling a large portion of the gearbox, so I was unable to properly tune the clearances of the discs inside the gearbox. However, with some tuning and more intentional usage of pins to align gearbox components, I think the gearbox could get far smoother.
+          One of the biggest issues I ran into in V2 was eccentricity in the gearbox, which wasn't an issue in V1 since the input cams were mounted directly to the stepper motor's output shaft. In V2, the whole gearbox got longer to accomodate the screws that held the bearing pins in place, so the motor shaft was no longer long enough to connect all the drive cams. Instead, I bolted the cams and a 3D printed stepper motor attachment together with M2 screws to act as the main input shaft. However, this new design introduced the possibility that the input shaft was no longer perfectly aligned with the motor shaft, causing a periodic resistance in the gearbox rotation. Also, changing the discs in this version of the gearbox is much more difficult since it requires disassembling a large portion of the gearbox, so I was unable to properly tune the clearances of the discs inside the gearbox. However, with some tuning and more intentional usage of pins to align gearbox components, I think the gearbox could get far smoother. See images in the slideshow below depicting inner parts and assembly.
         </p>
 
         <div id="slideshow1" class="slideshow-container">
@@ -134,11 +136,11 @@
 
       <div id="slideshow3" class="slideshow-container">
 				<div class="slides">
-					<img src="./Assets/CYCLOIDCOMBINE - 1.jpeg - 1.jpeg" alt="">
+					<img src="./Assets/CYCLOIDCOMBINE - 1.jpeg" alt="">
 				</div>
 				<div class="slides">
-					<img src="./Assets/CYCLOIDCOMBINE - 2.jpeg - 2.jpeg" alt="">
-				
+					<img src="./Assets/CYCLOIDCOMBINE - 2.jpeg" alt="">
+				</div>
 
 				<a class="prev" onclick="plusSlides(-1, 'slideshow3')">&#10094;</a>
 				<a class="next" onclick="plusSlides(1, 'slideshow3')">&#10095;</a>
@@ -146,17 +148,19 @@
 
       <h3>Controller</h3>
         <p>
-          The final piece of the puzzle was the CANBus controller, which I built by hand soldering together an Adafruit QT PY ESP32-S3, an Adafruit CAN Pal for CANBus, an SSD1306 128x64 OLED display, as well as a button and a rotary encoder to control its menus, all integrated with two breadboard-like protoboards, laser cut plates, and M2 standoffs and screws. It uses USB power and connects via the CANBus connector on the motor driver PCB. Again, with the help of Codex, I wrote code that followed the same CAN spec as the driver and could send various commands over the CAN connection to the driver as well as read back status codes and errors. Photos and design files are below.
+          The final piece of the puzzle was the CANBus controller, which I built by hand soldering together an Adafruit QT PY ESP32-S3, an Adafruit CAN Pal for CANBus, an SSD1306 128x64 OLED display, as well as a button and a rotary encoder to control its menus, all integrated with two breadboard-like protoboards, laser cut plates, and M2 standoffs and screws. It uses USB power and connects via the CANBus connector on the motor driver PCB. Again, with the help of Codex, I wrote code that followed the same CAN spec as the driver and could send various commands over the CAN connection to the driver as well as read back status codes and errors. Photos are below.
         </p>
 
       <div id="slideshow4" class="slideshow-container">
 				<div class="slides">
-					<img src="./Assets/CYCLOIDCOMBINE - 1.jpeg - 1.jpeg" alt="">
+					<img src="./Assets/CYCLOIDCONTROLLER - 1.jpeg" alt="">
 				</div>
 				<div class="slides">
-					<img src="./Assets/CYCLOIDCOMBINE - 2.jpeg - 2.jpeg" alt="">
-				
-
+					<img src="./Assets/CYCLOIDCONTROLLER - 2.jpeg" alt="">
+				</div>
+        <div class="slides">
+					<img src="./Assets/CYCLOIDCONTROLLER - 3.jpeg" alt="">
+				</div>
 				<a class="prev" onclick="plusSlides(-1, 'slideshow4')">&#10094;</a>
 				<a class="next" onclick="plusSlides(1, 'slideshow4')">&#10095;</a>
 			</div>
